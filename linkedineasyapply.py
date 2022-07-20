@@ -3,6 +3,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.action_chains import ActionChains
 from datetime import date
 from itertools import product
 
@@ -61,7 +62,7 @@ class LinkedinEasyApply:
         random.shuffle(searches)
 
         page_sleep = 0
-        minimum_time = 60*15
+        minimum_time = 30*1
         minimum_page_time = time.time() + minimum_time
 
         for (position, location) in searches:
@@ -87,7 +88,7 @@ class LinkedinEasyApply:
                         time.sleep(time_left)
                         minimum_page_time = time.time() + minimum_time
                     if page_sleep % 5 == 0:
-                        sleep_time = random.randint(500, 900)
+                        sleep_time = random.randint(50, 100)
                         print("Sleeping for " + str(sleep_time/60) + " minutes.")
                         time.sleep(sleep_time)
                         page_sleep += 1
@@ -101,7 +102,7 @@ class LinkedinEasyApply:
                 time.sleep(time_left)
                 minimum_page_time = time.time() + minimum_time
             if page_sleep % 5 == 0:
-                sleep_time = random.randint(500, 900)
+                sleep_time = random.randint(100, 300)
                 print("Sleeping for " + str(sleep_time/60) + " minutes.")
                 time.sleep(sleep_time)
                 page_sleep += 1
@@ -110,7 +111,7 @@ class LinkedinEasyApply:
     def apply_jobs(self, location):
         no_jobs_text = ""
         try:
-            no_jobs_element = self.browser.find_element_by_class_name('jobs-search-two-pane__no-results-banner--expand')
+            no_jobs_element = self.browser.find_element_by_class_name('scaffold-layout__list-detail')
             no_jobs_text = no_jobs_element.text
         except:
             pass
@@ -123,8 +124,9 @@ class LinkedinEasyApply:
         try:
             job_results = self.browser.find_element_by_class_name("jobs-search-results")
             self.scroll_slow(job_results)
-            self.scroll_slow(job_results, step=300, reverse=True)
+            self.scroll_slow(job_results, step=250, reverse=True)
 
+            # job_list = self.browser.find_elements_by_class_name('scaffold-layout__list-container')[0].find_elements_by_class_name('jobs-search-results__list')
             job_list = self.browser.find_elements_by_class_name('jobs-search-results__list')[0].find_elements_by_class_name('jobs-search-results__list-item')
         except:
             raise Exception("No more jobs on this page")
@@ -165,7 +167,9 @@ class LinkedinEasyApply:
                contains_blacklisted_keywords is False and link not in self.seen_jobs:
                 try:
                     job_el = job_tile.find_element_by_class_name('job-card-list__title')
-                    job_el.click()
+                    job_el.send_keys(Keys.CONTROL + Keys.ENTER)
+                    time.sleep(1)
+                    self.browser.switch_to.window(self.browser.window_handles[1])
 
                     time.sleep(random.uniform(3, 5))
 
@@ -176,6 +180,9 @@ class LinkedinEasyApply:
                             print("Done applying to the job!")
                         else:
                             print('Already applied to the job!')
+                        self.browser.close()
+                        self.browser.switch_to.window(self.browser.window_handles[0])
+
                     except:
                         temp = self.file_name
                         self.file_name = "failed"
@@ -229,7 +236,7 @@ class LinkedinEasyApply:
                     button_text = next_button.text.lower()
                     if submit_application_text in button_text:
                         try:
-                            self.unfollow()
+                            self.unhallow()
                         except:
                             print("Failed to unfollow company!")
                     time.sleep(random.uniform(1.5, 2.5))
@@ -282,8 +289,9 @@ class LinkedinEasyApply:
                         self.enter_text(input_field, self.personal_info['Street address'])
                     elif 'city' in lb:
                         self.enter_text(input_field, self.personal_info['City'])
-                        time.sleep(3)
+                        time.sleep(5)
                         input_field.send_keys(Keys.DOWN)
+                        time.sleep(1)
                         input_field.send_keys(Keys.RETURN)
                     elif 'zip' in lb or 'postal' in lb:
                         self.enter_text(input_field, self.personal_info['Zip'])
@@ -347,6 +355,8 @@ class LinkedinEasyApply:
                                 break
                     elif 'data retention' in radio_text:
                         answer = 'no'
+                    elif 'drug' in radio_text:
+                        answer = self.get_answer('drugTest')
                     else:
                         answer = radio_options[len(radio_options) - 1]
 
@@ -570,7 +580,7 @@ class LinkedinEasyApply:
                 except:
                     pass
 
-    def unfollow(self):
+    def unhallow(self):
         try:
             follow_checkbox = self.browser.find_element(By.XPATH, "//label[contains(.,\'to stay up to date with their page.\')]").click()
             follow_checkbox.click()
