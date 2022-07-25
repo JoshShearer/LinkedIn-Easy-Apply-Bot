@@ -52,6 +52,7 @@ titleBlacklist:
 
 uploads:
  resume: C:\Users\myDirectory\Resume.pdf
+ photo: C:\Users\myDirectory\photo.jpg
  # Cover letter is optional
  #coverLetter: C:\Users\myDirectory\CoverLettter.pdf
 
@@ -157,6 +158,8 @@ personalInfo:
  Zip: YourZip/Postal
  Linkedin: https://www.linkedin.com/in/my-linkedin-profile
  Website: https://www.my-website.com # github/website is interchangable here
+ Headline: your brief headline
+ Summary: Your executive Summary
 
 # ------------ Additional parameters: USA employment crap ---------------
 eeo:

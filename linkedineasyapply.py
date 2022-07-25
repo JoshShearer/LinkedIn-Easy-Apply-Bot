@@ -23,6 +23,7 @@ class LinkedinEasyApply:
         self.file_name = "output"
         self.output_file_directory = parameters['outputFileDirectory']
         self.resume_dir = parameters['uploads']['resume']
+        self.photo_dir = parameters['uploads']['photo']
         if 'coverLetter' in parameters['uploads']:
             self.cover_letter_dir = parameters['uploads']['coverLetter']
         else:
@@ -435,6 +436,10 @@ class LinkedinEasyApply:
                         to_enter = self.personal_info['Linkedin']
                     elif 'website' in question_text or 'github' in question_text or 'portfolio' in question_text:
                         to_enter = self.personal_info['Website']
+                    elif 'summary' in question_text:
+                        to_enter = self.personal_info['Summary']
+                    elif 'headline' in question_text:
+                        to_enter = self.personal_info['Headline']
                     else:
                         if text_field_type == 'numeric':
                             to_enter = 0
@@ -601,6 +606,8 @@ class LinkedinEasyApply:
                             upload_button.send_keys(self.cover_letter_dir)
                         elif 'required' in upload_type.text.lower():
                             upload_button.send_keys(self.resume_dir)
+                    elif 'photo' in upload_type.text.lower():
+                        upload_button.send_keys(self.photo_dir)
         except:
             print("Failed to upload resume or cover letter!")
             pass
@@ -669,7 +676,7 @@ class LinkedinEasyApply:
                         pass
         except:
             pass
-
+    
     def write_to_file(self, company, job_title, link, location, search_location):
         to_write = [company, job_title, link, location]
         file_path = self.output_file_directory + self.file_name + search_location + ".csv"
