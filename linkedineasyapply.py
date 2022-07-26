@@ -42,11 +42,11 @@ class LinkedinEasyApply:
     def login(self):
         try:
             self.browser.get("https://www.linkedin.com/login")
-            time.sleep(random.uniform(5, 10))
+            time.sleep(random.uniform(1, 5))
             self.browser.find_element_by_id("username").send_keys(self.email)
             self.browser.find_element_by_id("password").send_keys(self.password)
             self.browser.find_element_by_css_selector(".btn__primary--large").click()
-            time.sleep(random.uniform(5, 10))
+            time.sleep(random.uniform(1, 5))
         except TimeoutException:
             raise Exception("Could not login!")
 
