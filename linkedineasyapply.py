@@ -42,11 +42,11 @@ class LinkedinEasyApply:
     def login(self):
         try:
             self.browser.get("https://www.linkedin.com/login")
-            time.sleep(random.uniform(1, 5))
+            time.sleep(random.uniform(5, 10))
             self.browser.find_element_by_id("username").send_keys(self.email)
             self.browser.find_element_by_id("password").send_keys(self.password)
             self.browser.find_element_by_css_selector(".btn__primary--large").click()
-            time.sleep(random.uniform(1, 5))
+            time.sleep(random.uniform(5, 10))
         except TimeoutException:
             raise Exception("Could not login!")
 
@@ -123,11 +123,11 @@ class LinkedinEasyApply:
             raise Exception("No more jobs on this page")
 
         try:
-            job_results = self.browser.find_element_by_class_name("jobs-search-results")
+            job_results = self.browser.find_element_by_class_name("jobs-search-results-list")
             self.scroll_slow(job_results)
             self.scroll_slow(job_results, step=250, reverse=True)
 
-            # job_list = self.browser.find_elements_by_class_name('scaffold-layout__list-container')[0].find_elements_by_class_name('jobs-search-results__list')
+            # job_list = self.browser.find_elements_by_class_name('scaffold-layout__list-container')[0].find_elements_by_class_name('jobs-search-results__list-item')
             job_list = self.browser.find_elements_by_class_name('jobs-search-results__list')[0].find_elements_by_class_name('jobs-search-results__list-item')
         except:
             raise Exception("No more jobs on this page")
@@ -344,6 +344,8 @@ class LinkedinEasyApply:
                         answer = self.get_answer('commute')
                     elif 'background check' in radio_text:
                         answer = self.get_answer('backgroundCheck')
+                    elif 'remote' in radio_text:
+                        answer = self.get_answer('remote')
                     elif 'level of education' in radio_text:
                         for degree in self.checkboxes['degreeCompleted']:
                             if degree.lower() in radio_text:
@@ -440,6 +442,8 @@ class LinkedinEasyApply:
                         to_enter = self.personal_info['Summary']
                     elif 'headline' in question_text:
                         to_enter = self.personal_info['Headline']
+                    elif 'education' in question_text:
+                        to_enter = self.personal_info['University']
                     else:
                         if text_field_type == 'numeric':
                             to_enter = 0
